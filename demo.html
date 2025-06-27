@@ -210,8 +210,8 @@
         // 2. 初始化模組
         try {
           // 請替換為您服務的 serviceId 與 DSN
-          const serviceId = prompt('請輸入 serviceId', 'localhost');
-          const dsn = prompt('請輸入 API Host', 'https://aifeedback-backend-1023781149738.asia-east1.run.app');
+          const serviceId = prompt('請輸入 serviceId', 'test');
+          const dsn = prompt('請輸入 API Host', 'https://aifeedback-backend-465639248513.asia-east1.run.app');
 
           if (!serviceId || !dsn) {
             throw new Error('未提供 serviceId 或 API Host');
