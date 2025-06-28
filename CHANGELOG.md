@@ -1,24 +1,24 @@
-English | [繁體中文](./CHANGELOG.zh-TW.md)
+[English](./CHANGELOG.en-US.md)
 
-# Changelog
+# 版本更新日誌
 
-All notable changes to this project will be documented in this file.
+本檔案記錄了此專案所有重要的變更。
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+本檔案的格式基於 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，
+且本專案遵循[語意化版本](https://semver.org/lang/zh-TW/)規範。
 
-## [Unreleased]
+## [未發佈]
 
-### Added
+### 新增
 
-- Your new feature here.
+- 在這裡加入您的新功能。
 
 ## [1.0.0] - 2025-06-14
 
-### Added
+### 新增
 
-- Initial release of the AI Feedback SDK.
-- Core functions `init()` and `submit()` for feedback submission.
-- Webpack configuration for building the project.
-- ESLint and Prettier for code quality and style consistency.
-- Documentation (`README.md`, `CONTRIBUTING.md`, `LICENSE`).
+- AI Feedback SDK 初始版本發佈。
+- 核心函式 `init()` 和 `submit()`，用於提交回饋。
+- 用於建構專案的 Webpack 設定。
+- 用於確保程式碼品質與風格一致性的 ESLint 和 Prettier。
+- 專案文件 (`README.md`, `CONTRIBUTING.md`, `LICENSE`)。
