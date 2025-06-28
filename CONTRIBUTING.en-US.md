@@ -6,7 +6,7 @@ First off, thank you for considering contributing to AI Feedback SDK! It's peopl
 
 ## Where do I go from here?
 
-If you've noticed a bug or have a feature request, [make one](https://github.com/your-username/aifeedback-sdk/issues/new)! It's generally best if you get confirmation of your bug or approval for your feature request this way before starting to code.
+If you've noticed a bug or have a feature request, [make one](https://github.com/nics-tw/aifeedback-sdk/issues/new)! It's generally best if you get confirmation of your bug or approval for your feature request this way before starting to code.
 
 ### Fork & create a branch
 

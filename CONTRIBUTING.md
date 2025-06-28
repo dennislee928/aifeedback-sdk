@@ -6,7 +6,7 @@
 
 ## 我該從何處著手？
 
-如果您發現了 bug 或有新功能的請求，歡迎[建立一個 issue](https://github.com/your-username/aifeedback-sdk/issues/new)！通常來說，在您開始動手寫程式碼之前，先透過 issue 確認 bug 的存在或新功能的必要性，會是最好的做法。
+如果您發現了 bug 或有新功能的請求，歡迎[建立一個 issue](https://github.com/nics-tw/aifeedback-sdk/issues/new)！通常來說，在您開始動手寫程式碼之前，先透過 issue 確認 bug 的存在或新功能的必要性，會是最好的做法。
 
 ### Fork & 建立分支
 
