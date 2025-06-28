@@ -31,10 +31,16 @@
 
 ### 在瀏覽器中使用
 
-您可以直接在您的 HTML 檔案中引入本地建構好的 UMD 包。一個可執行的完整範例請參考 [`demo.html`](./demo.html) 檔案。
+您可以直接在您的 HTML 檔案中引入本地建構好的 UMD 包，或透過 jsDelivr CDN 引入。一個可執行的完整範例請參考 [`demo.html`](./demo.html) 檔案。
 
+**本地建置**
 ```html
 <script src="./dist/feedback-sdk.min.js"></script>
+```
+
+**CDN**
+```html
+<script src="https://cdn.jsdelivr.net/gh/nics-tw/aifeedback-sdk/dist/feedback-sdk.min.js"></script>
 ```
 
 ## 使用方法

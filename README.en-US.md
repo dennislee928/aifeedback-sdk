@@ -31,10 +31,16 @@ The bundled file will be located at `dist/feedback-sdk.min.js`.
 
 ### In the Browser
 
-You can include the locally built UMD bundle directly in your HTML file. See [`demo.html`](./demo.html) for a working example.
+You can include the locally built UMD bundle directly in your HTML file, or include it via the jsDelivr CDN. See [`demo.html`](./demo.html) for a working example.
 
+**Local Build**
 ```html
 <script src="./dist/feedback-sdk.min.js"></script>
+```
+
+**CDN**
+```html
+<script src="https://cdn.jsdelivr.net/gh/nics-tw/aifeedback-sdk/dist/feedback-sdk.min.js"></script>
 ```
 
 ## Usage
