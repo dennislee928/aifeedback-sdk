@@ -40,7 +40,7 @@
 
 **CDN**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/nics-tw/aifeedback-sdk/dist/feedback-sdk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/chirue-com/aifeedback-sdk/dist/feedback-sdk.min.js"></script>
 ```
 
 ## 使用方法

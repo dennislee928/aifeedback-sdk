@@ -7,22 +7,24 @@ async function requestToken(dsn, serviceId) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ serviceId: serviceId }),
-    credentials: 'include',
   });
 
   if (!response.ok) {
     throw await createErrorFromResponse(response);
   }
+
+  const data = await response.json();
+  return data.token;
 }
 
-async function submitFeedbackData(dsn, feedbackData) {
+async function submitFeedbackData(dsn, token, feedbackData) {
   const response = await fetch(`${dsn}/feedback`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(feedbackData),
-    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -39,10 +41,10 @@ async function submitFeedbackData(dsn, feedbackData) {
 export async function performSubmission(dsn, serviceId, feedbackData) {
   try {
     // Stage 1: Request token
-    await requestToken(dsn, serviceId);
+    const token = await requestToken(dsn, serviceId);
 
     // Stage 2: Submit feedback
-    const result = await submitFeedbackData(dsn, feedbackData);
+    const result = await submitFeedbackData(dsn, token, feedbackData);
 
     return result;
   } catch (error) {

@@ -30,7 +30,7 @@ describe('performSubmission', () => {
       fetch
         .mockResolvedValueOnce({
           ok: true,
-          json: jest.fn().mockResolvedValue({}),
+          json: jest.fn().mockResolvedValue({ token: 'test-token' }),
         })
         // Mock successful feedback submission
         .mockResolvedValueOnce({
@@ -48,15 +48,13 @@ describe('performSubmission', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ serviceId }),
-        credentials: 'include',
       });
 
       // Verify feedback submission
       expect(fetch).toHaveBeenNthCalledWith(2, `${dsn}/feedback`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer test-token' },
         body: JSON.stringify(feedbackData),
-        credentials: 'include',
       });
     });
 
@@ -64,7 +62,7 @@ describe('performSubmission', () => {
       fetch
         .mockResolvedValueOnce({
           ok: true,
-          json: jest.fn().mockResolvedValue({}),
+          json: jest.fn().mockResolvedValue({ token: 'test-token' }),
         })
         .mockResolvedValueOnce({
           ok: true,
@@ -109,7 +107,7 @@ describe('performSubmission', () => {
       fetch
         .mockResolvedValueOnce({
           ok: true,
-          json: jest.fn().mockResolvedValue({}),
+          json: jest.fn().mockResolvedValue({ token: 'test-token' }),
         })
         .mockResolvedValueOnce({
           ok: false,
@@ -170,7 +168,7 @@ describe('performSubmission', () => {
       fetch
         .mockResolvedValueOnce({
           ok: true,
-          json: jest.fn().mockResolvedValue({}),
+          json: jest.fn().mockResolvedValue({ token: 'test-token' }),
         })
         .mockResolvedValueOnce({
           ok: true,
@@ -183,7 +181,6 @@ describe('performSubmission', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ serviceId }),
-        credentials: 'include',
       });
     });
 
@@ -191,7 +188,7 @@ describe('performSubmission', () => {
       fetch
         .mockResolvedValueOnce({
           ok: true,
-          json: jest.fn().mockResolvedValue({}),
+          json: jest.fn().mockResolvedValue({ token: 'test-token' }),
         })
         .mockResolvedValueOnce({
           ok: true,
@@ -202,9 +199,8 @@ describe('performSubmission', () => {
 
       expect(fetch).toHaveBeenNthCalledWith(2, `${dsn}/feedback`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer test-token' },
         body: JSON.stringify(feedbackData),
-        credentials: 'include',
       });
     });
   });
