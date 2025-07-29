@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 
   try {
-    const serviceId = prompt('請輸入 serviceId', 'demo');
+    const serviceId = prompt('請輸入 serviceId', 'test');
     const dsn = prompt(
       '請輸入 API Host',
-      'https://aifeedback-backend-1023781149738.asia-east1.run.app'
+      'https://aifeedback-backend-465639248513.asia-east1.run.app'
     );
 
     if (!serviceId || !dsn) {
