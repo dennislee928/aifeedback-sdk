@@ -13,7 +13,7 @@ describe('validateFeedbackData', () => {
       const result = validateFeedbackData({
         feedbackRating: 'normal',
         feedbackComment: 'This is a test comment',
-        durationSec: 30,
+        inferenceSec: 30,
       });
       expect(result).toBeNull();
     });
@@ -49,7 +49,7 @@ describe('validateFeedbackData', () => {
     test('should accept zero duration', () => {
       const result = validateFeedbackData({
         feedbackRating: 'good',
-        durationSec: 0,
+        inferenceSec: 0,
       });
       expect(result).toBeNull();
     });
@@ -148,18 +148,18 @@ describe('validateFeedbackData', () => {
     });
   });
 
-  describe('invalid durationSec', () => {
+  describe('invalid inferenceSec', () => {
     test('should return error for non-number duration', () => {
       const invalidDurations = ['30', true, null, [], {}];
 
       invalidDurations.forEach((duration) => {
         const result = validateFeedbackData({
           feedbackRating: 'good',
-          durationSec: duration,
+          inferenceSec: duration,
         });
         expect(result).toMatchObject({
           code: 'INVALID_DATA',
-          message: 'durationSec must be a non-negative number.',
+          message: 'inferenceSec must be a non-negative number.',
         });
       });
     });
@@ -167,11 +167,11 @@ describe('validateFeedbackData', () => {
     test('should return error for negative duration', () => {
       const result = validateFeedbackData({
         feedbackRating: 'good',
-        durationSec: -1,
+        inferenceSec: -1,
       });
       expect(result).toMatchObject({
         code: 'INVALID_DATA',
-        message: 'durationSec must be a non-negative number.',
+        message: 'inferenceSec must be a non-negative number.',
       });
     });
   });

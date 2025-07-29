@@ -1,5 +1,3 @@
-[English](./README.en-US.md)
-
 # AI Feedback SDK
 
 [![授權](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -34,11 +32,13 @@
 您可以直接在您的 HTML 檔案中引入本地建構好的 UMD 包，或透過 jsDelivr CDN 引入。一個可執行的完整範例請參考 [`demo.html`](./demo.html) 檔案。
 
 **本地建置**
+
 ```html
 <script src="./dist/feedback-sdk.min.js"></script>
 ```
 
 **CDN**
+
 ```html
 <script src="https://cdn.jsdelivr.net/gh/chirue-com/aifeedback-sdk/dist/feedback-sdk.min.js"></script>
 ```
@@ -80,7 +80,7 @@ async function submitFeedback(feedbackData) {
 submitFeedback({
   feedbackRating: 'good',
   feedbackComment: '這個 AI 非常有幫助！',
-  durationSec: 15.5,
+  inferenceSec: 15.5,
 });
 ```
 
@@ -103,7 +103,7 @@ submitFeedback({
 - `feedbackData` `<Object>` (必填): 包含回饋內容的物件。
   - `feedbackRating` `<string>` (必填): 其值必須是 `"good"`, `"normal"`, 或 `"bad"` 其中之一。
   - `feedbackComment` `<string>` (選填): 長度上限為 500 字元的字串。
-  - `durationSec` `<number>` (選填): 一個非負數，代表互動的秒數。
+  - `inferenceSec` `<number>` (選填): 一個非負數，代表互動的秒數。
 - **回傳值**: `<Promise<Object>>` 一個 promise，成功時會 resolve 伺服器回傳的物件。
 
 ## 錯誤處理

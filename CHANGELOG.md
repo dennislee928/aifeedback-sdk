@@ -1,5 +1,3 @@
-[English](./CHANGELOG.en-US.md)
-
 # 版本更新日誌
 
 本檔案記錄了此專案所有重要的變更。

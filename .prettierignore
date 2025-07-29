@@ -1,0 +1,14 @@
+# Build output directory
+dist/
+
+# Test coverage directory
+coverage/
+
+# Dependencies
+node_modules/
+
+# SBOM
+sbom.xml
+
+# Demo
+demo/

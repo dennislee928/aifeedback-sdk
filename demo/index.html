@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self'; 
+        style-src 'self'; 
+        script-src 'self'; 
+        connect-src 'self' https://aifeedback-backend-1023781149738.asia-east1.run.app;
+        form-action 'self';
+      "
+    />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback SDK 範例 - 聊天室</title>
+    <script src="../dist/feedback-sdk.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="chat-container">
+      <div class="chat-header">
+        <h1>客服機器人</h1>
+      </div>
+      <div class="chat-messages">
+        <div class="message bot-message">你好！請問有什麼可以幫助您的嗎？</div>
+        <div class="message user-message">嗨，我想查詢我的訂單狀態。</div>
+        <div class="message bot-message">好的，請提供您的訂單編號。</div>
+        <div class="message user-message">我的訂單編號是 #AIF-12345。</div>
+        <div class="message bot-message">
+          感謝您。查詢到您的訂單已於今天上午出貨，預計明天會送達。
+        </div>
+        <div class="message bot-message">
+          請問這次的服務您還滿意嗎？請給我一點回饋！
+          <div class="feedback-section">
+            <div class="feedback-buttons">
+              <button id="goodBtn">滿意 👍</button>
+              <button id="normalBtn">普通 😐</button>
+              <button id="badBtn">不滿意 👎</button>
+            </div>
+            <textarea
+              id="comment"
+              placeholder="請輸入您的建議..."
+              rows="3"
+            ></textarea>
+            <button id="submitBtn">送出回饋</button>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input">
+        <input type="text" placeholder="輸入訊息..." disabled />
+        <button disabled>傳送</button>
+      </div>
+    </div>
+    <div id="status" style="display: none"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

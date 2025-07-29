@@ -16,7 +16,7 @@ describe('performSubmission', () => {
   const feedbackData = {
     feedbackRating: 'good',
     feedbackComment: 'Great service!',
-    durationSec: 15,
+    inferenceSec: 15,
   };
 
   beforeEach(() => {

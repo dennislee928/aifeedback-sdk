@@ -1,5 +1,3 @@
-[English](./CONTRIBUTING.en-US.md)
-
 # 貢獻指南 - AI Feedback SDK
 
 首先，非常感謝您考慮為 AI Feedback SDK 做出貢獻！正是因為有像您這樣的人，開源社群才能如此美好。

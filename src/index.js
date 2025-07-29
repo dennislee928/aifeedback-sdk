@@ -31,7 +31,7 @@ const FeedbackSDK = {
    * @param {object} feedbackData - The feedback data object.
    * @param {string} feedbackData.feedbackRating - "good", "normal", or "bad".
    * @param {string} [feedbackData.feedbackComment] - User comment, max 500 chars.
-   * @param {number} [feedbackData.durationSec] - Duration in seconds, non-negative.
+   * @param {number} [feedbackData.inferenceSec] - Duration in seconds, non-negative.
    * @returns {Promise<any>} A promise that resolves with the server response on success, or rejects with a structured error.
    */
   submit: async function (feedbackData) {
