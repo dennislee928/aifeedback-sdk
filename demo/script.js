@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const serviceId = prompt('請輸入 serviceId', 'test');
     const dsn = prompt(
       '請輸入 API Host',
-      'https://aifeedback-backend-465639248513.asia-east1.run.app'
+      'https://aifeedback.nics.nat.gov.tw'
     );
 
     if (!serviceId || !dsn) {
