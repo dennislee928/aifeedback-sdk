@@ -1,5 +1,5 @@
 {
-  "name": "aifeedback-sdk",
+  "name": "@nics-tw/aifeedback-sdk",
   "version": "1.0.0",
   "description": "A lightweight SDK for submitting feedback.",
   "main": "dist/feedback-sdk.min.js",
