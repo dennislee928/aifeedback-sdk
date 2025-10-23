@@ -1,8 +1,9 @@
 #!/bin/bash
 # AI Feedback SDK - 完整安全測試腳本 (Bash)
 # 整合所有可用的安全測試工具
+# 版本: 2.0.0
 
-set -e
+set -euo pipefail
 
 # 顏色定義
 RED='\033[0;31m'
@@ -17,7 +18,36 @@ QUICK=false
 FIX=false
 INSTALL=false
 CI=false
+VERBOSE=false
 OUTPUT_DIR="security-reports"
+SKIP_SNYK=false
+
+# 顯示幫助信息
+show_help() {
+    cat << EOF
+AI Feedback SDK - 安全測試腳本
+
+用法: $0 [選項]
+
+選項:
+    --quick          快速測試模式 (僅執行核心檢查)
+    --fix            自動修復問題
+    --install        安裝安全測試工具
+    --ci             CI/CD 模式 (減少輸出)
+    --verbose        詳細輸出模式
+    --skip-snyk      跳過 Snyk 測試
+    --output-dir DIR 指定報告輸出目錄 (預設: security-reports)
+    --help           顯示此幫助信息
+
+範例:
+    $0                    # 執行完整安全測試
+    $0 --quick           # 快速測試
+    $0 --install         # 安裝工具
+    $0 --fix             # 自動修復問題
+    $0 --ci --skip-snyk  # CI 模式，跳過 Snyk
+
+EOF
+}
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -35,14 +65,28 @@ while [[ $# -gt 0 ]]; do
             ;;
         --ci)
             CI=true
+            VERBOSE=false
+            shift
+            ;;
+        --verbose)
+            VERBOSE=true
+            shift
+            ;;
+        --skip-snyk)
+            SKIP_SNYK=true
             shift
             ;;
         --output-dir)
             OUTPUT_DIR="$2"
             shift 2
             ;;
+        --help|-h)
+            show_help
+            exit 0
+            ;;
         *)
-            echo "未知參數: $1"
+            print_color $RED "未知參數: $1"
+            print_color $YELLOW "使用 --help 查看可用選項"
             exit 1
             ;;
     esac
@@ -52,11 +96,49 @@ done
 print_color() {
     local color=$1
     local message=$2
-    echo -e "${color}${message}${NC}"
+    if [ "$CI" = true ]; then
+        echo "$message"
+    else
+        echo -e "${color}${message}${NC}"
+    fi
+}
+
+print_verbose() {
+    if [ "$VERBOSE" = true ]; then
+        print_color $CYAN "🔍 [詳細] $1"
+    fi
 }
 
 check_command() {
     command -v "$1" >/dev/null 2>&1
+}
+
+# 檢查是否在 Windows 環境中
+is_windows() {
+    case "$(uname -s)" in
+        CYGWIN*|MINGW*|MSYS*)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+# 安全的命令執行
+safe_execute() {
+    local cmd="$1"
+    local description="$2"
+    
+    print_verbose "執行命令: $cmd"
+    
+    if eval "$cmd" 2>/dev/null; then
+        return 0
+    else
+        local exit_code=$?
+        print_verbose "命令失敗 (退出碼: $exit_code): $cmd"
+        return $exit_code
+    fi
 }
 
 install_security_tools() {
