@@ -39,9 +39,9 @@ MAX_PARALLEL=4
 TIMEOUT=300
 
 # Test results tracking
-declare -a TEST_RESULTS=()
-declare -A TEST_TIMINGS=()
-declare -A TEST_OUTPUTS=()
+TEST_RESULTS=()
+TEST_TIMINGS=()
+TEST_OUTPUTS=()
 
 # ============================================================================
 # Utility Functions
@@ -105,6 +105,38 @@ get_package_manager() {
     else
         echo ""
     fi
+}
+
+# Check and fix Node.js path issues
+check_nodejs_path() {
+    if ! check_command node; then
+        log WARN "Node.js not found in PATH"
+        
+        # Try common Node.js locations
+        local node_paths=(
+            "/usr/bin/node"
+            "/usr/local/bin/node"
+            "/opt/node/bin/node"
+            "$HOME/.nvm/versions/node/*/bin/node"
+            "/mnt/c/Program Files/nodejs/node.exe"
+            "/mnt/c/Program Files (x86)/nodejs/node.exe"
+        )
+        
+        for path in "${node_paths[@]}"; do
+            if [ -f "$path" ] || ls $path 2>/dev/null; then
+                log INFO "Found Node.js at: $path"
+                export PATH="$(dirname "$path"):$PATH"
+                if check_command node; then
+                    log SUCCESS "Node.js path fixed"
+                    return 0
+                fi
+            fi
+        done
+        
+        log ERROR "Node.js not found. Please install Node.js or fix PATH"
+        return 1
+    fi
+    return 0
 }
 
 # Enhanced error handler
@@ -262,12 +294,22 @@ install_security_tools() {
             local version="1.8.5"
             local url="https://github.com/google/osv-scanner/releases/download/v${version}/osv-scanner_${version}_${os}_${arch}.tar.gz"
             
-            curl -L "$url" | tar xz -C /usr/local/bin osv-scanner 2>/dev/null || {
-                log WARN "Failed to install OSV Scanner globally, installing locally..."
+            # Try to install globally first
+            if curl -L "$url" | tar xz -C /usr/local/bin osv-scanner 2>/dev/null; then
+                log SUCCESS "OSV Scanner installed globally"
+            else
+                log WARN "Failed to install OSV Scanner globally, trying local installation..."
                 mkdir -p "$HOME/.local/bin"
-                curl -L "$url" | tar xz -C "$HOME/.local/bin" osv-scanner
-                export PATH="$HOME/.local/bin:$PATH"
-            }
+                if curl -L "$url" | tar xz -C "$HOME/.local/bin" osv-scanner 2>/dev/null; then
+                    log SUCCESS "OSV Scanner installed locally"
+                    # Add to PATH for current session
+                    export PATH="$HOME/.local/bin:$PATH"
+                    # Add to shell profile for future sessions
+                    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc" 2>/dev/null || true
+                else
+                    log WARN "Failed to install OSV Scanner. Please install manually."
+                fi
+            fi
         fi
     fi
     
@@ -329,9 +371,8 @@ run_test() {
     local end_time=$(date +%s)
     local duration=$((end_time - start_time))
     
-    TEST_TIMINGS["$test_id"]=$duration
-    TEST_OUTPUTS["$test_id"]=$output_file
-    TEST_RESULTS+=("$test_id|$test_name|$exit_code|$duration")
+    # Store results in simple arrays (compatible with older bash)
+    TEST_RESULTS+=("$test_id|$test_name|$exit_code|$duration|$output_file")
     
     return $exit_code
 }
@@ -426,7 +467,7 @@ define_tests() {
     if [ "$QUICK" = false ]; then
         # Check for secrets
         if check_command grep; then
-            test_array+=("secrets|Secret Scan|grep -rI --exclude-dir=node_modules --exclude-dir=.git -E '(password|secret|token|api_key|apikey)\\s*=\\s*[\"\\047][^\"\\047]+[\"\\047]' .|Manual secret detection")
+            test_array+=("secrets|Secret Scan|grep -rI --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=security-reports -E '(password|secret|token|api_key|apikey)\\s*=\\s*[\"'"'"'][^\"'"'"']+[\"'"'"']' .|Manual secret detection")
         fi
         
         # License compliance
@@ -471,12 +512,20 @@ TEST RESULTS
 ───────────────────────────────────────────────────────────────────────────
 EOF
     
-    for result in "${TEST_RESULTS[@]}"; do
-        IFS='|' read -r test_id test_name exit_code test_duration <<< "$result"
+    # Process results using a simpler approach
+    local i=0
+    while [ $i -lt ${#TEST_RESULTS[@]} ]; do
+        local result="${TEST_RESULTS[$i]}"
+        local test_id=$(echo "$result" | cut -d"|" -f1)
+        local test_name=$(echo "$result" | cut -d"|" -f2)
+        local exit_code=$(echo "$result" | cut -d"|" -f3)
+        local test_duration=$(echo "$result" | cut -d"|" -f4)
+        
         local status="✅ PASS"
         [ "$exit_code" -ne 0 ] && status="❌ FAIL"
         
         printf "%-40s %s (%ss)\n" "$test_name" "$status" "$test_duration" >> "$output_file"
+        i=$((i + 1))
     done
     
     cat >> "$output_file" << EOF
@@ -515,9 +564,16 @@ generate_json_report() {
   "tests": [
 EOF
     
+    # Process results using a simpler approach
     local first=true
-    for result in "${TEST_RESULTS[@]}"; do
-        IFS='|' read -r test_id test_name exit_code test_duration <<< "$result"
+    local i=0
+    while [ $i -lt ${#TEST_RESULTS[@]} ]; do
+        local result="${TEST_RESULTS[$i]}"
+        local test_id=$(echo "$result" | cut -d"|" -f1)
+        local test_name=$(echo "$result" | cut -d"|" -f2)
+        local exit_code=$(echo "$result" | cut -d"|" -f3)
+        local test_duration=$(echo "$result" | cut -d"|" -f4)
+        local output_file=$(echo "$result" | cut -d"|" -f5)
         
         [ "$first" = false ] && echo "," >> "$output_file"
         first=false
@@ -526,12 +582,13 @@ EOF
     {
       "id": "$test_id",
       "name": "$test_name",
-      "status": "$([ $exit_code -eq 0 ] && echo 'passed' || echo 'failed')",
+      "status": "$([ $exit_code -eq 0 ] && echo \"passed\" || echo \"failed\")",
       "exit_code": $exit_code,
       "duration": $test_duration,
-      "output_file": "${TEST_OUTPUTS[$test_id]}"
+      "output_file": "$output_file"
     }
 EOF
+        i=$((i + 1))
     done
     
     cat >> "$output_file" << EOF
@@ -560,6 +617,11 @@ main() {
     fi
     
     # Check prerequisites
+    check_nodejs_path || {
+        log ERROR "Node.js path issues detected. Please fix Node.js installation."
+        exit 1
+    }
+    
     local pkg_manager=$(get_package_manager)
     if [ -z "$pkg_manager" ]; then
         log ERROR "No package manager found. Please install npm, yarn, or pnpm."
