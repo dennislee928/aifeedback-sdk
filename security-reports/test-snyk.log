@@ -1,0 +1,14 @@
+
+ ERROR   Unspecified Error (SNYK-CLI-0000)
+                                                                                        
+                                                                                        
+           Testing c:\Users\dennis.lee\Documents\GitHub...                              
+                                                                                        
+           Could not detect supported target files in                                   
+           c:\Users\dennis.lee\Documents\GitHub.                                        
+           Please see our documentation for supported languages and target files:       
+           https://snyk.co/udVgQ and make sure you are in the right directory.          
+
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+                                                                         
+ID:      urn:snyk:interaction:bb4d57cc-d583-464b-938a-8d1d6e4894b8 
