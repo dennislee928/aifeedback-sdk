@@ -348,17 +348,13 @@ run_test() {
     log INFO "Running: $test_name"
     log DEBUG "Command: $test_cmd"
     
-    # Run test with timeout
-    if timeout "$TIMEOUT" bash -c "$test_cmd" > "$output_file" 2>&1; then
+    # Run test without timeout for better compatibility
+    if bash -c "$test_cmd" > "$output_file" 2>&1; then
         exit_code=0
         log SUCCESS "$test_name passed"
     else
         exit_code=$?
-        if [ $exit_code -eq 124 ]; then
-            log ERROR "$test_name timed out after ${TIMEOUT}s"
-        else
-            log ERROR "$test_name failed (exit code: $exit_code)"
-        fi
+        log ERROR "$test_name failed (exit code: $exit_code)"
         
         if [ "$VERBOSE" = true ]; then
             log DEBUG "Output:"
@@ -378,7 +374,7 @@ run_test() {
 }
 
 run_tests_sequential() {
-    local -n tests=$1
+    local tests=("$@")
     local failed=0
     
     for test in "${tests[@]}"; do
@@ -397,7 +393,7 @@ run_tests_sequential() {
 }
 
 run_tests_parallel() {
-    local -n tests=$1
+    local tests=("$@")
     local failed=0
     local pids=()
     local running=0
@@ -435,44 +431,43 @@ run_tests_parallel() {
 # ============================================================================
 
 define_tests() {
-    local -n test_array=$1
     local pkg_manager=$(get_package_manager)
     
     # Core tests (always run)
-    test_array+=("npm-audit|NPM Audit|$pkg_manager audit --audit-level=moderate|Check npm dependencies for vulnerabilities")
+    echo "npm-audit|NPM Audit|$pkg_manager audit --audit-level=moderate|Check npm dependencies for vulnerabilities"
     
     # Trunk (if available)
     if check_command trunk; then
         local trunk_cmd="trunk check --all --no-progress"
         [ "$FIX" = true ] && trunk_cmd="$trunk_cmd --fix"
-        test_array+=("trunk|Trunk Security|$trunk_cmd|Comprehensive security checks")
+        echo "trunk|Trunk Security|$trunk_cmd|Comprehensive security checks"
     fi
     
     # OSV Scanner
     if check_command osv-scanner; then
-        test_array+=("osv|OSV Scanner|osv-scanner --lockfile package-lock.json --format json|Scan for known vulnerabilities")
+        echo "osv|OSV Scanner|osv-scanner --lockfile package-lock.json --format json|Scan for known vulnerabilities"
     fi
     
     # Snyk
     if check_command snyk && [ "$SKIP_SNYK" = false ]; then
-        test_array+=("snyk|Snyk Test|snyk test --severity-threshold=medium|Snyk vulnerability scan")
+        echo "snyk|Snyk Test|snyk test --severity-threshold=medium|Snyk vulnerability scan"
     fi
     
     # Retire.js
     if check_command retire; then
-        test_array+=("retire|Retire.js|retire --path . --outputformat json|Check for outdated libraries")
+        echo "retire|Retire.js|retire --path . --outputformat json|Check for outdated libraries"
     fi
     
     # Additional checks in full mode
     if [ "$QUICK" = false ]; then
         # Check for secrets
         if check_command grep; then
-            test_array+=("secrets|Secret Scan|grep -rI --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=security-reports -E '(password|secret|token|api_key|apikey)\\s*=\\s*[\"'"'"'][^\"'"'"']+[\"'"'"']' .|Manual secret detection")
+            echo "secrets|Secret Scan|grep -rI --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=security-reports -E '(password|secret|token|api_key|apikey).*=' .|Manual secret detection"
         fi
         
         # License compliance
         if [ -f "package.json" ]; then
-            test_array+=("licenses|License Check|$pkg_manager list --depth=0 --json|Check package licenses")
+            echo "licenses|License Check|$pkg_manager list --depth=0 --json|Check package licenses"
         fi
     fi
 }
@@ -629,8 +624,11 @@ main() {
     fi
     
     # Define and check available tests
-    declare -a test_list=()
-    define_tests test_list
+    local test_list_output=$(define_tests)
+    local test_list=()
+    while IFS= read -r line; do
+        test_list+=("$line")
+    done <<< "$test_list_output"
     
     local total_tests=${#test_list[@]}
     log INFO "Total tests to run: $total_tests"
@@ -648,10 +646,10 @@ main() {
     
     if [ "$PARALLEL" = true ] && [ $total_tests -gt 1 ]; then
         log INFO "Running tests in parallel (max: $MAX_PARALLEL)"
-        run_tests_parallel test_list || failed_count=$?
+        run_tests_parallel "${test_list[@]}" || failed_count=$?
     else
         log INFO "Running tests sequentially"
-        run_tests_sequential test_list || failed_count=$?
+        run_tests_sequential "${test_list[@]}" || failed_count=$?
     fi
     
     local end_time=$(date +%s)
