@@ -10,7 +10,20 @@
     "lint:fix": "eslint src/ --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "security:audit": "npm audit",
+    "security:audit:fix": "npm audit fix",
+    "security:check": "npm audit && echo 'Security check completed'",
+    "security:full": "npm audit --audit-level=moderate && echo 'Full security audit completed'",
+    "security:trunk": "trunk check --all",
+    "security:trunk:fix": "trunk check --all --fix",
+    "security:osv": "osv-scanner --lockfile package-lock.json",
+    "security:trufflehog": "trufflehog filesystem . --no-verification",
+    "security:checkov": "checkov --directory . --framework npm",
+    "security:all": "npm run security:audit && npm run security:trunk && npm run security:osv && npm run security:trufflehog && npm run security:checkov",
+    "security:ci": "npm run security:audit --audit-level=high && npm run security:trunk && npm run security:osv",
+    "security:install": "npm install -g osv-scanner trufflehog checkov",
+    "precommit": "npm run lint && npm run format:check && npm run test && npm run security:check"
   },
   "engines": {
     "node": ">=18.0.0",
