@@ -354,7 +354,17 @@ run_test() {
         log SUCCESS "$test_name passed"
     else
         exit_code=$?
-        log ERROR "$test_name failed (exit code: $exit_code)"
+        # Special handling for Snyk (exit code 3 means limit reached but scan was successful)
+        if [ "$test_id" = "snyk" ] && [ $exit_code -eq 3 ]; then
+            if grep -q "no vulnerable paths found" "$output_file" 2>/dev/null; then
+                exit_code=0
+                log SUCCESS "$test_name passed (limit reached but no vulnerabilities found)"
+            else
+                log ERROR "$test_name failed (exit code: $exit_code)"
+            fi
+        else
+            log ERROR "$test_name failed (exit code: $exit_code)"
+        fi
         
         if [ "$VERBOSE" = true ]; then
             log DEBUG "Output:"
@@ -445,29 +455,29 @@ define_tests() {
     
     # OSV Scanner
     if check_command osv-scanner; then
-        echo "osv|OSV Scanner|osv-scanner --lockfile package-lock.json --format json|Scan for known vulnerabilities"
+        echo "osv|OSV Scanner|cd .. && osv-scanner --lockfile package-lock.json --format json|Scan for known vulnerabilities"
     fi
     
     # Snyk
     if check_command snyk && [ "$SKIP_SNYK" = false ]; then
-        echo "snyk|Snyk Test|snyk test --severity-threshold=medium|Snyk vulnerability scan"
+        echo "snyk|Snyk Test|cd .. && snyk test --severity-threshold=medium|Snyk vulnerability scan"
     fi
     
     # Retire.js
     if check_command retire; then
-        echo "retire|Retire.js|retire --path . --outputformat json|Check for outdated libraries"
+        echo "retire|Retire.js|cd .. && retire --path . --outputformat json|Check for outdated libraries"
     fi
     
     # Additional checks in full mode
     if [ "$QUICK" = false ]; then
         # Check for secrets
         if check_command grep; then
-            echo "secrets|Secret Scan|grep -rI --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=security-reports -E '(password|secret|token|api_key|apikey).*=' .|Manual secret detection"
+            echo "secrets|Secret Scan|cd .. && grep -rI --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=security-reports -E '(password|secret|token|api_key|apikey).*=' .|Manual secret detection"
         fi
         
         # License compliance
-        if [ -f "package.json" ]; then
-            echo "licenses|License Check|$pkg_manager list --depth=0 --json|Check package licenses"
+        if [ -f "../package.json" ]; then
+            echo "licenses|License Check|cd .. && $pkg_manager list --depth=0 --json|Check package licenses"
         fi
     fi
 }
@@ -534,13 +544,13 @@ EOF
 }
 
 generate_json_report() {
-    local output_file=$1
+    local json_output_file=$1
     local passed=$2
     local failed=$3
     local total=$4
     local duration=$5
     
-    cat > "$output_file" << EOF
+    cat > "$json_output_file" << EOF
 {
   "version": "$SCRIPT_VERSION",
   "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
@@ -586,7 +596,7 @@ EOF
         i=$((i + 1))
     done
     
-    cat >> "$output_file" << EOF
+    cat >> "$json_output_file" << EOF
 
   ]
 }
