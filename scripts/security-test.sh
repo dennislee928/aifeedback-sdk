@@ -65,7 +65,32 @@ install_security_tools() {
     # 檢查並安裝 Node.js 工具
     if check_command npm; then
         print_color $CYAN "📦 安裝 npm 安全工具..."
-        npm install -g osv-scanner trufflehog checkov 2>/dev/null || true
+        
+        # TruffleHog
+        if ! check_command trufflehog; then
+            print_color $CYAN "  安裝 TruffleHog..."
+            npm install -g trufflehog 2>/dev/null || true
+        fi
+        
+        # Snyk
+        if ! check_command snyk; then
+            print_color $CYAN "  安裝 Snyk..."
+            npm install -g snyk 2>/dev/null || true
+        fi
+        
+        # OSV Scanner (需要手動安裝)
+        if ! check_command osv-scanner; then
+            print_color $YELLOW "  OSV Scanner 需要手動安裝:"
+            print_color $CYAN "    Windows: 下載 https://github.com/google/osv-scanner/releases"
+            print_color $CYAN "    Linux/macOS: curl -L https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_1.4.0_linux_amd64.tar.gz | tar xz"
+        fi
+        
+        # Checkov (需要手動安裝)
+        if ! check_command checkov; then
+            print_color $YELLOW "  Checkov 需要手動安裝:"
+            print_color $CYAN "    pip install checkov"
+            print_color $CYAN "    或使用 Docker: docker run --rm -v \$(pwd):/src bridgecrew/checkov -d /src"
+        fi
     fi
     
     # 檢查並安裝 Trunk
@@ -75,13 +100,8 @@ install_security_tools() {
         curl -fsSL https://get.trunk.io | bash
     fi
     
-    # 檢查並安裝 Snyk
-    if ! check_command snyk; then
-        print_color $CYAN "📥 安裝 Snyk CLI..."
-        npm install -g snyk 2>/dev/null || true
-    fi
-    
     print_color $GREEN "✅ 工具安裝完成"
+    print_color $CYAN "💡 提示: 某些工具可能需要手動安裝，請參考上述說明"
 }
 
 run_security_test() {
@@ -155,9 +175,14 @@ fi
 # 定義測試項目
 declare -a tests=()
 declare -a results=()
+declare -a available_tools=()
+declare -a missing_tools=()
 
-# 基本 npm 安全測試
+print_color $CYAN "🔍 檢查可用工具..."
+
+# 基本 npm 安全測試 (總是可用)
 tests+=("NPM Audit|npm audit|檢查 npm 依賴套件安全漏洞")
+available_tools+=("npm audit")
 
 # Trunk 安全檢查
 if check_command trunk; then
@@ -166,26 +191,48 @@ if check_command trunk; then
         trunk_cmd="trunk check --all --fix"
     fi
     tests+=("Trunk Security Check|$trunk_cmd|Trunk 整合安全檢查 (ESLint, OSV, TruffleHog, Checkov)")
+    available_tools+=("trunk")
+else
+    missing_tools+=("trunk")
 fi
 
 # OSV Scanner
 if check_command osv-scanner; then
     tests+=("OSV Scanner|osv-scanner --lockfile package-lock.json|開源漏洞資料庫掃描")
+    available_tools+=("osv-scanner")
+else
+    missing_tools+=("osv-scanner")
 fi
 
 # TruffleHog
 if check_command trufflehog; then
     tests+=("TruffleHog|trufflehog filesystem . --no-verification|檢測敏感資訊洩漏")
+    available_tools+=("trufflehog")
+else
+    missing_tools+=("trufflehog")
 fi
 
 # Checkov
 if check_command checkov; then
     tests+=("Checkov|checkov --directory . --framework npm|基礎設施安全檢查")
+    available_tools+=("checkov")
+else
+    missing_tools+=("checkov")
 fi
 
 # Snyk (如果可用且未達限制)
 if check_command snyk; then
     tests+=("Snyk Security Test|snyk test|Snyk 安全漏洞掃描")
+    available_tools+=("snyk")
+else
+    missing_tools+=("snyk")
+fi
+
+# 顯示工具狀態
+print_color $GREEN "✅ 可用工具: ${available_tools[*]}"
+if [ ${#missing_tools[@]} -gt 0 ]; then
+    print_color $YELLOW "⚠️  缺少工具: ${missing_tools[*]}"
+    print_color $CYAN "💡 提示: 執行 './scripts/security-test.sh --install' 安裝缺少的工具"
 fi
 
 # 執行測試
