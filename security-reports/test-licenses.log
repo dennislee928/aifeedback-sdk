@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "name": "@nics-tw/aifeedback-sdk",
+  "dependencies": {
+    "@babel/core": {
+      "version": "7.28.0",
+      "resolved": "https://registry.npmjs.org/@babel/core/-/core-7.28.0.tgz",
+      "overridden": false
+    },
+    "@babel/preset-env": {
+      "version": "7.28.0",
+      "resolved": "https://registry.npmjs.org/@babel/preset-env/-/preset-env-7.28.0.tgz",
+      "overridden": false
+    },
+    "babel-jest": {
+      "version": "30.0.4",
+      "resolved": "https://registry.npmjs.org/babel-jest/-/babel-jest-30.0.4.tgz",
+      "overridden": false
+    },
+    "babel-loader": {
+      "version": "8.4.1",
+      "resolved": "https://registry.npmjs.org/babel-loader/-/babel-loader-8.4.1.tgz",
+      "overridden": false
+    },
+    "eslint-config-prettier": {
+      "version": "8.10.0",
+      "resolved": "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-8.10.0.tgz",
+      "overridden": false
+    },
+    "eslint": {
+      "version": "8.57.1",
+      "resolved": "https://registry.npmjs.org/eslint/-/eslint-8.57.1.tgz",
+      "overridden": false
+    },
+    "jest-environment-jsdom": {
+      "version": "29.7.0",
+      "resolved": "https://registry.npmjs.org/jest-environment-jsdom/-/jest-environment-jsdom-29.7.0.tgz",
+      "overridden": false
+    },
+    "jest": {
+      "version": "29.7.0",
+      "resolved": "https://registry.npmjs.org/jest/-/jest-29.7.0.tgz",
+      "overridden": false
+    },
+    "prettier": {
+      "version": "3.6.2",
+      "resolved": "https://registry.npmjs.org/prettier/-/prettier-3.6.2.tgz",
+      "overridden": false
+    },
+    "terser-webpack-plugin": {
+      "version": "5.3.14",
+      "resolved": "https://registry.npmjs.org/terser-webpack-plugin/-/terser-webpack-plugin-5.3.14.tgz",
+      "overridden": false
+    },
+    "webpack-cli": {
+      "version": "4.10.0",
+      "resolved": "https://registry.npmjs.org/webpack-cli/-/webpack-cli-4.10.0.tgz",
+      "overridden": false
+    },
+    "webpack": {
+      "version": "5.100.1",
+      "resolved": "https://registry.npmjs.org/webpack/-/webpack-5.100.1.tgz",
+      "overridden": false
+    }
+  }
+}

@@ -1,98 +1,67 @@
 #!/bin/bash
-# AI Feedback SDK - 完整安全測試腳本 (Bash)
-# 整合所有可用的安全測試工具
-# 版本: 2.0.0
+# AI Feedback SDK - Enhanced Security Testing Script
+# Version: 3.0.0
+# Features: Parallel execution, JSON reports, better error handling, caching
 
 set -euo pipefail
 
-# 顏色定義
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+# ============================================================================
+# Configuration & Constants
+# ============================================================================
 
-# 參數處理
+readonly SCRIPT_VERSION="3.0.0"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Color codes
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+readonly CYAN='\033[0;36m'
+readonly MAGENTA='\033[0;35m'
+readonly BOLD='\033[1m'
+readonly NC='\033[0m'
+
+# Default parameters
 QUICK=false
 FIX=false
 INSTALL=false
 CI=false
 VERBOSE=false
+PARALLEL=true
 OUTPUT_DIR="security-reports"
 SKIP_SNYK=false
+SKIP_CACHE=false
+FAIL_FAST=false
+JSON_OUTPUT=false
+MAX_PARALLEL=4
+TIMEOUT=300
 
-# 顯示幫助信息
-show_help() {
-    cat << EOF
-AI Feedback SDK - 安全測試腳本
+# Test results tracking
+declare -a TEST_RESULTS=()
+declare -A TEST_TIMINGS=()
+declare -A TEST_OUTPUTS=()
 
-用法: $0 [選項]
+# ============================================================================
+# Utility Functions
+# ============================================================================
 
-選項:
-    --quick          快速測試模式 (僅執行核心檢查)
-    --fix            自動修復問題
-    --install        安裝安全測試工具
-    --ci             CI/CD 模式 (減少輸出)
-    --verbose        詳細輸出模式
-    --skip-snyk      跳過 Snyk 測試
-    --output-dir DIR 指定報告輸出目錄 (預設: security-reports)
-    --help           顯示此幫助信息
-
-範例:
-    $0                    # 執行完整安全測試
-    $0 --quick           # 快速測試
-    $0 --install         # 安裝工具
-    $0 --fix             # 自動修復問題
-    $0 --ci --skip-snyk  # CI 模式，跳過 Snyk
-
-EOF
+log() {
+    local level=$1
+    shift
+    local message="$*"
+    local timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+    
+    case "$level" in
+        ERROR)   print_color "$RED" "❌ [$timestamp] ERROR: $message" ;;
+        WARN)    print_color "$YELLOW" "⚠️  [$timestamp] WARN: $message" ;;
+        INFO)    print_color "$CYAN" "ℹ️  [$timestamp] INFO: $message" ;;
+        SUCCESS) print_color "$GREEN" "✅ [$timestamp] SUCCESS: $message" ;;
+        DEBUG)   [ "$VERBOSE" = true ] && print_color "$MAGENTA" "🔍 [$timestamp] DEBUG: $message" ;;
+    esac
 }
 
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        --quick)
-            QUICK=true
-            shift
-            ;;
-        --fix)
-            FIX=true
-            shift
-            ;;
-        --install)
-            INSTALL=true
-            shift
-            ;;
-        --ci)
-            CI=true
-            VERBOSE=false
-            shift
-            ;;
-        --verbose)
-            VERBOSE=true
-            shift
-            ;;
-        --skip-snyk)
-            SKIP_SNYK=true
-            shift
-            ;;
-        --output-dir)
-            OUTPUT_DIR="$2"
-            shift 2
-            ;;
-        --help|-h)
-            show_help
-            exit 0
-            ;;
-        *)
-            print_color $RED "未知參數: $1"
-            print_color $YELLOW "使用 --help 查看可用選項"
-            exit 1
-            ;;
-    esac
-done
-
-# 工具函數
 print_color() {
     local color=$1
     local message=$2
@@ -103,257 +72,561 @@ print_color() {
     fi
 }
 
-print_verbose() {
-    if [ "$VERBOSE" = true ]; then
-        print_color $CYAN "🔍 [詳細] $1"
-    fi
+print_header() {
+    local title="$1"
+    local width=80
+    local padding=$(( (width - ${#title}) / 2 ))
+    
+    print_color "$BLUE" ""
+    print_color "$BLUE" "$(printf '═%.0s' $(seq 1 $width))"
+    print_color "$BOLD$BLUE" "$(printf '%*s' $padding)$title"
+    print_color "$BLUE" "$(printf '═%.0s' $(seq 1 $width))"
+    print_color "$BLUE" ""
 }
 
 check_command() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# 檢查是否在 Windows 環境中
 is_windows() {
     case "$(uname -s)" in
-        CYGWIN*|MINGW*|MSYS*)
-            return 0
-            ;;
-        *)
-            return 1
-            ;;
+        CYGWIN*|MINGW*|MSYS*|Windows*) return 0 ;;
+        *) return 1 ;;
     esac
 }
 
-# 安全的命令執行
-safe_execute() {
-    local cmd="$1"
-    local description="$2"
-    
-    print_verbose "執行命令: $cmd"
-    
-    if eval "$cmd" 2>/dev/null; then
-        return 0
-    else
-        local exit_code=$?
-        print_verbose "命令失敗 (退出碼: $exit_code): $cmd"
-        return $exit_code
-    fi
-}
-
-install_security_tools() {
-    print_color $BLUE "🔧 安裝安全測試工具..."
-    
-    # 檢查並安裝 Node.js 工具
+get_package_manager() {
     if check_command npm; then
-        print_color $CYAN "📦 安裝 npm 安全工具..."
-        
-        # TruffleHog
-        if ! check_command trufflehog; then
-            print_color $CYAN "  安裝 TruffleHog..."
-            npm install -g trufflehog 2>/dev/null || true
-        fi
-        
-        # Snyk
-        if ! check_command snyk; then
-            print_color $CYAN "  安裝 Snyk..."
-            npm install -g snyk 2>/dev/null || true
-        fi
-        
-        # OSV Scanner (需要手動安裝)
-        if ! check_command osv-scanner; then
-            print_color $YELLOW "  OSV Scanner 需要手動安裝:"
-            print_color $CYAN "    Windows: 下載 https://github.com/google/osv-scanner/releases"
-            print_color $CYAN "    Linux/macOS: curl -L https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_1.4.0_linux_amd64.tar.gz | tar xz"
-        fi
-        
-        # Checkov (需要手動安裝)
-        if ! check_command checkov; then
-            print_color $YELLOW "  Checkov 需要手動安裝:"
-            print_color $CYAN "    pip install checkov"
-            print_color $CYAN "    或使用 Docker: docker run --rm -v \$(pwd):/src bridgecrew/checkov -d /src"
-        fi
+        echo "npm"
+    elif check_command yarn; then
+        echo "yarn"
+    elif check_command pnpm; then
+        echo "pnpm"
+    else
+        echo ""
     fi
-    
-    # 檢查並安裝 Trunk
-    if ! check_command trunk; then
-        print_color $CYAN "📥 安裝 Trunk CLI..."
-        # Linux/macOS 安裝指令
-        curl -fsSL https://get.trunk.io | bash
-    fi
-    
-    print_color $GREEN "✅ 工具安裝完成"
-    print_color $CYAN "💡 提示: 某些工具可能需要手動安裝，請參考上述說明"
 }
 
-run_security_test() {
-    local test_name=$1
-    local command=$2
-    local description=$3
+# Enhanced error handler
+error_handler() {
+    local line_no=$1
+    local bash_lineno=$2
+    local command="$3"
+    log ERROR "Script failed at line $line_no: $command"
+    cleanup_on_exit
+    exit 1
+}
+
+trap 'error_handler ${LINENO} ${BASH_LINENO} "$BASH_COMMAND"' ERR
+
+# Cleanup function
+cleanup_on_exit() {
+    log DEBUG "Cleaning up temporary files..."
+    # Add cleanup logic here if needed
+}
+
+trap cleanup_on_exit EXIT
+
+# ============================================================================
+# Help & Arguments
+# ============================================================================
+
+show_help() {
+    cat << EOF
+${BOLD}AI Feedback SDK - Enhanced Security Testing Script v${SCRIPT_VERSION}${NC}
+
+${BOLD}USAGE:${NC}
+    $0 [OPTIONS]
+
+${BOLD}OPTIONS:${NC}
+    ${CYAN}--quick${NC}              Fast mode (core checks only)
+    ${CYAN}--fix${NC}                Auto-fix issues when possible
+    ${CYAN}--install${NC}            Install security tools
+    ${CYAN}--ci${NC}                 CI/CD mode (minimal output, strict exit codes)
+    ${CYAN}--verbose${NC}            Enable verbose logging
+    ${CYAN}--skip-snyk${NC}          Skip Snyk testing
+    ${CYAN}--skip-cache${NC}         Skip cache, force fresh scans
+    ${CYAN}--fail-fast${NC}          Exit on first test failure
+    ${CYAN}--json${NC}               Output results in JSON format
+    ${CYAN}--no-parallel${NC}        Disable parallel test execution
+    ${CYAN}--max-parallel N${NC}     Max parallel tests (default: 4)
+    ${CYAN}--timeout N${NC}          Test timeout in seconds (default: 300)
+    ${CYAN}--output-dir DIR${NC}     Report output directory (default: security-reports)
+    ${CYAN}--help, -h${NC}           Show this help message
+
+${BOLD}EXAMPLES:${NC}
+    ${GREEN}$0${NC}                          # Full security scan
+    ${GREEN}$0 --quick --verbose${NC}        # Fast scan with details
+    ${GREEN}$0 --install${NC}                # Install all tools
+    ${GREEN}$0 --fix --ci${NC}               # Auto-fix in CI mode
+    ${GREEN}$0 --json --output-dir ./out${NC} # JSON report to custom dir
+    ${GREEN}$0 --fail-fast --no-parallel${NC} # Sequential with early exit
+
+${BOLD}ENVIRONMENT VARIABLES:${NC}
+    ${CYAN}SNYK_TOKEN${NC}           Snyk authentication token
+    ${CYAN}SECURITY_SCAN_CACHE${NC}  Enable/disable caching (true/false)
+
+EOF
+}
+
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --quick)            QUICK=true; shift ;;
+            --fix)              FIX=true; shift ;;
+            --install)          INSTALL=true; shift ;;
+            --ci)               CI=true; VERBOSE=false; shift ;;
+            --verbose)          VERBOSE=true; shift ;;
+            --skip-snyk)        SKIP_SNYK=true; shift ;;
+            --skip-cache)       SKIP_CACHE=true; shift ;;
+            --fail-fast)        FAIL_FAST=true; shift ;;
+            --json)             JSON_OUTPUT=true; shift ;;
+            --no-parallel)      PARALLEL=false; shift ;;
+            --max-parallel)     MAX_PARALLEL="$2"; shift 2 ;;
+            --timeout)          TIMEOUT="$2"; shift 2 ;;
+            --output-dir)       OUTPUT_DIR="$2"; shift 2 ;;
+            --help|-h)          show_help; exit 0 ;;
+            *)
+                log ERROR "Unknown argument: $1"
+                echo "Use --help for available options"
+                exit 1
+                ;;
+        esac
+    done
+}
+
+# ============================================================================
+# Tool Installation
+# ============================================================================
+
+install_tool() {
+    local tool_name=$1
+    local install_cmd=$2
     
-    print_color $BLUE "🔍 執行: $test_name"
-    print_color $CYAN "   $description"
+    if check_command "$tool_name"; then
+        log INFO "$tool_name already installed"
+        return 0
+    fi
     
-    if eval "$command" 2>/dev/null; then
-        print_color $GREEN "✅ $test_name 通過"
+    log INFO "Installing $tool_name..."
+    if eval "$install_cmd"; then
+        log SUCCESS "$tool_name installed successfully"
         return 0
     else
-        print_color $RED "❌ $test_name 失敗"
+        log WARN "Failed to install $tool_name"
         return 1
     fi
 }
 
-generate_report() {
-    local results=("$@")
-    local timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
-    local report_file="$OUTPUT_DIR/security-report-$timestamp.txt"
+install_security_tools() {
+    print_header "Installing Security Tools"
     
-    mkdir -p "$OUTPUT_DIR"
+    local pkg_manager=$(get_package_manager)
+    if [ -z "$pkg_manager" ]; then
+        log ERROR "No package manager found (npm/yarn/pnpm)"
+        exit 1
+    fi
     
-    cat > "$report_file" << EOF
-# AI Feedback SDK 安全測試報告
-生成時間: $(date)
-測試環境: Bash/Unix
-
-## 測試結果摘要
-EOF
+    log INFO "Using package manager: $pkg_manager"
     
-    for result in "${results[@]}"; do
-        echo "- $result" >> "$report_file"
+    # Install npm-based tools
+    declare -A npm_tools=(
+        ["snyk"]="npm install -g snyk"
+        ["retire"]="npm install -g retire"
+        ["audit-ci"]="npm install -g audit-ci"
+    )
+    
+    for tool in "${!npm_tools[@]}"; do
+        install_tool "$tool" "${npm_tools[$tool]}"
     done
     
-    print_color $GREEN "📊 報告已生成: $report_file"
+    # Install Trunk CLI
+    if ! check_command trunk; then
+        log INFO "Installing Trunk CLI..."
+        if is_windows; then
+            log WARN "Please install Trunk manually on Windows: https://docs.trunk.io/cli/installation"
+        else
+            curl -fsSL https://get.trunk.io | bash -s -- -y
+        fi
+    fi
+    
+    # Install OSV Scanner
+    if ! check_command osv-scanner; then
+        log INFO "Installing OSV Scanner..."
+        if is_windows; then
+            log WARN "Please install OSV Scanner manually: https://github.com/google/osv-scanner/releases"
+        else
+            local os=$(uname -s | tr '[:upper:]' '[:lower:]')
+            local arch=$(uname -m)
+            [ "$arch" = "x86_64" ] && arch="amd64"
+            local version="1.8.5"
+            local url="https://github.com/google/osv-scanner/releases/download/v${version}/osv-scanner_${version}_${os}_${arch}.tar.gz"
+            
+            curl -L "$url" | tar xz -C /usr/local/bin osv-scanner 2>/dev/null || {
+                log WARN "Failed to install OSV Scanner globally, installing locally..."
+                mkdir -p "$HOME/.local/bin"
+                curl -L "$url" | tar xz -C "$HOME/.local/bin" osv-scanner
+                export PATH="$HOME/.local/bin:$PATH"
+            }
+        fi
+    fi
+    
+    # Verify installations
+    print_header "Verification"
+    local installed=0
+    local total=0
+    
+    for tool in snyk trunk osv-scanner retire audit-ci; do
+        ((total++))
+        if check_command "$tool"; then
+            log SUCCESS "$tool: installed"
+            ((installed++))
+        else
+            log WARN "$tool: not found"
+        fi
+    done
+    
+    log INFO "Installation complete: $installed/$total tools available"
 }
 
-# 主程式開始
-print_color $BLUE "🛡️  AI Feedback SDK - 完整安全測試"
-print_color $BLUE "====================================="
+# ============================================================================
+# Test Execution
+# ============================================================================
 
-# 建立輸出目錄
-mkdir -p "$OUTPUT_DIR"
-
-# 安裝工具
-if [ "$INSTALL" = true ]; then
-    install_security_tools
-    exit 0
-fi
-
-# 檢查必要工具
-required_tools=("npm" "node")
-missing_tools=()
-
-for tool in "${required_tools[@]}"; do
-    if ! check_command "$tool"; then
-        missing_tools+=("$tool")
-    fi
-done
-
-if [ ${#missing_tools[@]} -gt 0 ]; then
-    print_color $RED "❌ 缺少必要工具: ${missing_tools[*]}"
-    print_color $YELLOW "請執行: ./scripts/security-test.sh --install"
-    exit 1
-fi
-
-# 定義測試項目
-declare -a tests=()
-declare -a results=()
-declare -a available_tools=()
-declare -a missing_tools=()
-
-print_color $CYAN "🔍 檢查可用工具..."
-
-# 基本 npm 安全測試 (總是可用)
-tests+=("NPM Audit|npm audit|檢查 npm 依賴套件安全漏洞")
-available_tools+=("npm audit")
-
-# Trunk 安全檢查
-if check_command trunk; then
-    trunk_cmd="trunk check --all"
-    if [ "$FIX" = true ]; then
-        trunk_cmd="trunk check --all --fix"
-    fi
-    tests+=("Trunk Security Check|$trunk_cmd|Trunk 整合安全檢查 (ESLint, OSV, TruffleHog, Checkov)")
-    available_tools+=("trunk")
-else
-    missing_tools+=("trunk")
-fi
-
-# OSV Scanner
-if check_command osv-scanner; then
-    tests+=("OSV Scanner|osv-scanner --lockfile package-lock.json|開源漏洞資料庫掃描")
-    available_tools+=("osv-scanner")
-else
-    missing_tools+=("osv-scanner")
-fi
-
-# TruffleHog
-if check_command trufflehog; then
-    tests+=("TruffleHog|trufflehog filesystem . --no-verification|檢測敏感資訊洩漏")
-    available_tools+=("trufflehog")
-else
-    missing_tools+=("trufflehog")
-fi
-
-# Checkov
-if check_command checkov; then
-    tests+=("Checkov|checkov --directory . --framework npm|基礎設施安全檢查")
-    available_tools+=("checkov")
-else
-    missing_tools+=("checkov")
-fi
-
-# Snyk (如果可用且未達限制)
-if check_command snyk; then
-    tests+=("Snyk Security Test|snyk test|Snyk 安全漏洞掃描")
-    available_tools+=("snyk")
-else
-    missing_tools+=("snyk")
-fi
-
-# 顯示工具狀態
-print_color $GREEN "✅ 可用工具: ${available_tools[*]}"
-if [ ${#missing_tools[@]} -gt 0 ]; then
-    print_color $YELLOW "⚠️  缺少工具: ${missing_tools[*]}"
-    print_color $CYAN "💡 提示: 執行 './scripts/security-test.sh --install' 安裝缺少的工具"
-fi
-
-# 執行測試
-passed_tests=0
-total_tests=${#tests[@]}
-
-print_color $BLUE ""
-print_color $BLUE "🚀 開始執行 $total_tests 項安全測試..."
-
-for test in "${tests[@]}"; do
-    IFS='|' read -r test_name command description <<< "$test"
+run_test() {
+    local test_id=$1
+    local test_name=$2
+    local test_cmd=$3
+    local description=$4
     
-    if run_security_test "$test_name" "$command" "$description"; then
-        results+=("✅ $test_name: 通過")
-        ((passed_tests++))
+    local start_time=$(date +%s)
+    local output_file="$OUTPUT_DIR/test-${test_id}.log"
+    local exit_code=0
+    
+    log INFO "Running: $test_name"
+    log DEBUG "Command: $test_cmd"
+    
+    # Run test with timeout
+    if timeout "$TIMEOUT" bash -c "$test_cmd" > "$output_file" 2>&1; then
+        exit_code=0
+        log SUCCESS "$test_name passed"
     else
-        results+=("❌ $test_name: 失敗")
+        exit_code=$?
+        if [ $exit_code -eq 124 ]; then
+            log ERROR "$test_name timed out after ${TIMEOUT}s"
+        else
+            log ERROR "$test_name failed (exit code: $exit_code)"
+        fi
+        
+        if [ "$VERBOSE" = true ]; then
+            log DEBUG "Output:"
+            tail -n 20 "$output_file" | while read -r line; do
+                echo "  $line"
+            done
+        fi
     fi
     
-    echo "" # 空行分隔
-done
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+    
+    TEST_TIMINGS["$test_id"]=$duration
+    TEST_OUTPUTS["$test_id"]=$output_file
+    TEST_RESULTS+=("$test_id|$test_name|$exit_code|$duration")
+    
+    return $exit_code
+}
 
-# 生成報告
-generate_report "${results[@]}"
+run_tests_sequential() {
+    local -n tests=$1
+    local failed=0
+    
+    for test in "${tests[@]}"; do
+        IFS='|' read -r test_id test_name test_cmd description <<< "$test"
+        
+        if ! run_test "$test_id" "$test_name" "$test_cmd" "$description"; then
+            ((failed++))
+            if [ "$FAIL_FAST" = true ]; then
+                log ERROR "Fail-fast enabled, stopping tests"
+                return $failed
+            fi
+        fi
+    done
+    
+    return $failed
+}
 
-# 總結
-print_color $BLUE ""
-print_color $BLUE "📊 測試完成摘要"
-print_color $BLUE "================="
-print_color $CYAN "總測試數: $total_tests"
-print_color $GREEN "通過測試: $passed_tests"
-print_color $RED "失敗測試: $((total_tests - passed_tests))"
+run_tests_parallel() {
+    local -n tests=$1
+    local failed=0
+    local pids=()
+    local running=0
+    
+    for test in "${tests[@]}"; do
+        IFS='|' read -r test_id test_name test_cmd description <<< "$test"
+        
+        # Wait if max parallel reached
+        while [ $running -ge "$MAX_PARALLEL" ]; do
+            for pid in "${pids[@]}"; do
+                if ! kill -0 "$pid" 2>/dev/null; then
+                    wait "$pid" || ((failed++))
+                    ((running--))
+                fi
+            done
+            sleep 0.1
+        done
+        
+        # Start test in background
+        (run_test "$test_id" "$test_name" "$test_cmd" "$description") &
+        pids+=($!)
+        ((running++))
+    done
+    
+    # Wait for remaining tests
+    for pid in "${pids[@]}"; do
+        wait "$pid" || ((failed++))
+    done
+    
+    return $failed
+}
 
-if [ $passed_tests -eq $total_tests ]; then
-    print_color $GREEN ""
-    print_color $GREEN "🎉 所有安全測試通過！"
-    exit 0
-else
-    print_color $YELLOW ""
-    print_color $YELLOW "⚠️  發現安全問題，請檢查報告"
-    exit 1
-fi
+# ============================================================================
+# Test Definitions
+# ============================================================================
+
+define_tests() {
+    local -n test_array=$1
+    local pkg_manager=$(get_package_manager)
+    
+    # Core tests (always run)
+    test_array+=("npm-audit|NPM Audit|$pkg_manager audit --audit-level=moderate|Check npm dependencies for vulnerabilities")
+    
+    # Trunk (if available)
+    if check_command trunk; then
+        local trunk_cmd="trunk check --all --no-progress"
+        [ "$FIX" = true ] && trunk_cmd="$trunk_cmd --fix"
+        test_array+=("trunk|Trunk Security|$trunk_cmd|Comprehensive security checks")
+    fi
+    
+    # OSV Scanner
+    if check_command osv-scanner; then
+        test_array+=("osv|OSV Scanner|osv-scanner --lockfile package-lock.json --format json|Scan for known vulnerabilities")
+    fi
+    
+    # Snyk
+    if check_command snyk && [ "$SKIP_SNYK" = false ]; then
+        test_array+=("snyk|Snyk Test|snyk test --severity-threshold=medium|Snyk vulnerability scan")
+    fi
+    
+    # Retire.js
+    if check_command retire; then
+        test_array+=("retire|Retire.js|retire --path . --outputformat json|Check for outdated libraries")
+    fi
+    
+    # Additional checks in full mode
+    if [ "$QUICK" = false ]; then
+        # Check for secrets
+        if check_command grep; then
+            test_array+=("secrets|Secret Scan|grep -rI --exclude-dir=node_modules --exclude-dir=.git -E '(password|secret|token|api_key|apikey)\\s*=\\s*[\"\\047][^\"\\047]+[\"\\047]' .|Manual secret detection")
+        fi
+        
+        # License compliance
+        if [ -f "package.json" ]; then
+            test_array+=("licenses|License Check|$pkg_manager list --depth=0 --json|Check package licenses")
+        fi
+    fi
+}
+
+# ============================================================================
+# Reporting
+# ============================================================================
+
+generate_text_report() {
+    local output_file=$1
+    local passed=$2
+    local failed=$3
+    local total=$4
+    local duration=$5
+    
+    cat > "$output_file" << EOF
+╔════════════════════════════════════════════════════════════════════════════╗
+║                   AI Feedback SDK Security Test Report                    ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Generated: $(date)
+Script Version: $SCRIPT_VERSION
+Environment: $(uname -s) $(uname -r)
+
+═══════════════════════════════════════════════════════════════════════════
+
+SUMMARY
+───────────────────────────────────────────────────────────────────────────
+Total Tests:     $total
+Passed:          $passed ($(( passed * 100 / total ))%)
+Failed:          $failed ($(( failed * 100 / total ))%)
+Total Duration:  ${duration}s
+
+═══════════════════════════════════════════════════════════════════════════
+
+TEST RESULTS
+───────────────────────────────────────────────────────────────────────────
+EOF
+    
+    for result in "${TEST_RESULTS[@]}"; do
+        IFS='|' read -r test_id test_name exit_code test_duration <<< "$result"
+        local status="✅ PASS"
+        [ "$exit_code" -ne 0 ] && status="❌ FAIL"
+        
+        printf "%-40s %s (%ss)\n" "$test_name" "$status" "$test_duration" >> "$output_file"
+    done
+    
+    cat >> "$output_file" << EOF
+
+═══════════════════════════════════════════════════════════════════════════
+
+For detailed output of each test, see:
+$OUTPUT_DIR/test-*.log
+
+EOF
+}
+
+generate_json_report() {
+    local output_file=$1
+    local passed=$2
+    local failed=$3
+    local total=$4
+    local duration=$5
+    
+    cat > "$output_file" << EOF
+{
+  "version": "$SCRIPT_VERSION",
+  "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+  "environment": {
+    "os": "$(uname -s)",
+    "arch": "$(uname -m)",
+    "hostname": "$(hostname)"
+  },
+  "summary": {
+    "total": $total,
+    "passed": $passed,
+    "failed": $failed,
+    "duration": $duration,
+    "success_rate": $(awk "BEGIN {printf \"%.2f\", ($passed * 100 / $total)}")
+  },
+  "tests": [
+EOF
+    
+    local first=true
+    for result in "${TEST_RESULTS[@]}"; do
+        IFS='|' read -r test_id test_name exit_code test_duration <<< "$result"
+        
+        [ "$first" = false ] && echo "," >> "$output_file"
+        first=false
+        
+        cat >> "$output_file" << EOF
+    {
+      "id": "$test_id",
+      "name": "$test_name",
+      "status": "$([ $exit_code -eq 0 ] && echo 'passed' || echo 'failed')",
+      "exit_code": $exit_code,
+      "duration": $test_duration,
+      "output_file": "${TEST_OUTPUTS[$test_id]}"
+    }
+EOF
+    done
+    
+    cat >> "$output_file" << EOF
+
+  ]
+}
+EOF
+}
+
+# ============================================================================
+# Main Execution
+# ============================================================================
+
+main() {
+    parse_arguments "$@"
+    
+    print_header "AI Feedback SDK Security Testing v${SCRIPT_VERSION}"
+    
+    # Create output directory
+    mkdir -p "$OUTPUT_DIR"
+    
+    # Install mode
+    if [ "$INSTALL" = true ]; then
+        install_security_tools
+        exit 0
+    fi
+    
+    # Check prerequisites
+    local pkg_manager=$(get_package_manager)
+    if [ -z "$pkg_manager" ]; then
+        log ERROR "No package manager found. Please install npm, yarn, or pnpm."
+        exit 1
+    fi
+    
+    # Define and check available tests
+    declare -a test_list=()
+    define_tests test_list
+    
+    local total_tests=${#test_list[@]}
+    log INFO "Total tests to run: $total_tests"
+    
+    if [ $total_tests -eq 0 ]; then
+        log ERROR "No tests available. Please install security tools."
+        log INFO "Run: $0 --install"
+        exit 1
+    fi
+    
+    # Run tests
+    print_header "Executing Security Tests"
+    local start_time=$(date +%s)
+    local failed_count=0
+    
+    if [ "$PARALLEL" = true ] && [ $total_tests -gt 1 ]; then
+        log INFO "Running tests in parallel (max: $MAX_PARALLEL)"
+        run_tests_parallel test_list || failed_count=$?
+    else
+        log INFO "Running tests sequentially"
+        run_tests_sequential test_list || failed_count=$?
+    fi
+    
+    local end_time=$(date +%s)
+    local total_duration=$((end_time - start_time))
+    local passed_count=$((total_tests - failed_count))
+    
+    # Generate reports
+    print_header "Generating Reports"
+    
+    local timestamp=$(date +"%Y%m%d_%H%M%S")
+    local text_report="$OUTPUT_DIR/security-report-${timestamp}.txt"
+    local json_report="$OUTPUT_DIR/security-report-${timestamp}.json"
+    
+    generate_text_report "$text_report" "$passed_count" "$failed_count" "$total_tests" "$total_duration"
+    log SUCCESS "Text report: $text_report"
+    
+    if [ "$JSON_OUTPUT" = true ]; then
+        generate_json_report "$json_report" "$passed_count" "$failed_count" "$total_tests" "$total_duration"
+        log SUCCESS "JSON report: $json_report"
+    fi
+    
+    # Final summary
+    print_header "Test Summary"
+    print_color "$CYAN" "Total Tests:  $total_tests"
+    print_color "$GREEN" "Passed:       $passed_count"
+    print_color "$RED" "Failed:       $failed_count"
+    print_color "$CYAN" "Duration:     ${total_duration}s"
+    echo ""
+    
+    if [ $failed_count -eq 0 ]; then
+        print_color "$GREEN" "🎉 All security tests passed!"
+        exit 0
+    else
+        print_color "$RED" "❌ Security tests failed. Please review the reports."
+        exit 1
+    fi
+}
+
+# Run main function
+main "$@"

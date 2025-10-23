@@ -1,0 +1,457 @@
+⡿ Downloading Trunk 1.25.0...
+[1F[0K⡿ Downloading Trunk 1.25.0...
+[1F[0K⢿ Downloading Trunk 1.25.0...
+[1F[0K⣻ Downloading Trunk 1.25.0...
+[1F[0K⣽ Downloading Trunk 1.25.0...
+[1F[0K⣾ Downloading Trunk 1.25.0...
+[1F[0K⣷ Downloading Trunk 1.25.0...
+[1F[0K⣯ Downloading Trunk 1.25.0...
+[1F[0K⣟ Downloading Trunk 1.25.0...
+[1F[0K⡿ Downloading Trunk 1.25.0...
+[1F[0K⢿ Downloading Trunk 1.25.0...
+[1F[0K⣻ Downloading Trunk 1.25.0...
+[1F[0K⣽ Downloading Trunk 1.25.0...
+[1F[0K⣾ Downloading Trunk 1.25.0...
+[1F[0K⣷ Downloading Trunk 1.25.0...
+[1F[0K⣯ Downloading Trunk 1.25.0...
+[1F[0K⣟ Downloading Trunk 1.25.0...
+[1F[0K⡿ Downloading Trunk 1.25.0...
+[1F[0K⢿ Downloading Trunk 1.25.0...
+[1F[0K⣻ Downloading Trunk 1.25.0...
+[1F[0K⣽ Downloading Trunk 1.25.0...
+[1F[0K⣾ Downloading Trunk 1.25.0...
+[1F[0K⣷ Downloading Trunk 1.25.0...
+[1F[0K⣯ Downloading Trunk 1.25.0...
+[1F[0K⣟ Downloading Trunk 1.25.0...
+[1F[0K⡿ Downloading Trunk 1.25.0...
+[1F[0K⢿ Downloading Trunk 1.25.0...
+[1F[0K⣻ Downloading Trunk 1.25.0...
+[1F[0K⣽ Downloading Trunk 1.25.0...
+[1F[0K⣾ Downloading Trunk 1.25.0...
+[1F[0K⣷ Downloading Trunk 1.25.0...
+[1F[0K⣯ Downloading Trunk 1.25.0...
+[1F[0K⣟ Downloading Trunk 1.25.0...
+[1F[0K⡿ Downloading Trunk 1.25.0...
+[1F[0K⢿ Downloading Trunk 1.25.0...
+[1F[0K⣻ Downloading Trunk 1.25.0...
+[1F[0K[0;32m✔[0m Downloading Trunk 1.25.0... done
+⡿ Unpacking Trunk...
+[1F[0K[0;32m✔[0m Unpacking Trunk... done
+
+[1m[30m[107m  AUTOFIXES  [0m
+
+[1m[4mscripts/security-test.sh[0m[4m[90m:14:30
+[0m[1m[90m 14:30[0m[33m  low[0m  Prefer putting braces around variable references even when not strictly required.[1m[90m  shellcheck/SC2250
+[0m
+[90m  12 | [0mreadonly SCRIPT_VERSION="3.0.0"
+[90m  13 | [0mreadonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+[90m  14 | [0m[31mreadonly PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+[0m[90m     | [0m[32mreadonly PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+[0m[90m  15 | [0m
+[90m  16 | [0m# Color codes
+
+[1m[4mscripts/security-test.sh[0m[4m[90m:56:11
+[0m[1m[90m 56:11[0m[33m  low[0m  Prefer putting braces around variable references even when not strictly required.[1m[90m  shellcheck/SC2250
+[0m
+[90m  54 | [0m    local timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+[90m  55 | [0m    
+[90m  56 | [0m[31m    case "$level" in
+[0m[90m     | [0m[32m    case "${level}" in
+[0m[90m  57 | [0m        ERROR)   print_color "$RED" "❌ [$timestamp] ERROR: $message" ;;
+[90m  58 | [0m        WARN)    print_color "$YELLOW" "⚠️  [$timestamp] WARN: $message" ;;
+
+[1m[4mscripts/security-test.sh[0m[4m[90m:57:31
+[0m[1m[90m 57:31[0m[33m  low[0m  Prefer putting braces around variable references even when not strictly required.[1m[90m  shellcheck/SC2250
+[0m
+[90m  55 | [0m    
+[90m  56 | [0m    case "$level" in
+[90m  57 | [0m[31m        ERROR)   print_color "$RED" "❌ [$timestamp] ERROR: $message" ;;
+[0m[90m     | [0m[32m        ERROR)   print_color "${RED}" "❌ [$timestamp] ERROR: $message" ;;
+[0m[90m  58 | [0m        WARN)    print_color "$YELLOW" "⚠️  [$timestamp] WARN: $message" ;;
+[90m  59 | [0m        INFO)    print_color "$CYAN" "ℹ️  [$timestamp] INFO: $message" ;;
+
+[1m[4mscripts/security-test.sh[0m[4m[90m:57:41
+[0m[1m[90m 57:41[0m[33m  low[0m  Prefer putting braces around variable references even when not strictly required.[1m[90m  shellcheck/SC2250
+[0m
+[90m  55 | [0m    
+[90m  56 | [0m    case "$level" in
+[90m  57 | [0m[31m        ERROR)   print_color "$RED" "❌ [$timestamp] ERROR: $message" ;;
+[0m[90m     | [0m[32m        ERROR)   print_color "$RED" "❌${[$timesta}mp] ERROR: $message" ;;
+[0m[90m  58 | [0m        WARN)    print_color "$YELLOW" "⚠️  [$timestamp] WARN: $message" ;;
+[90m  59 | [0m        INFO)    print_color "$CYAN" "ℹ️  [$timestamp] INFO: $message" ;;
+
+[1m[4mscripts/security-test.sh[0m[4m[90m:57:60
+[0m[1m[90m 57:60[0m[33m  low[0m  Prefer putting braces around variable references even when not strictly required.[1m[90m  shellcheck/SC2250
+[0m
+[90m  55 | [0m    
+[90m  56 | [0m    case "$level" in
+[90m  57 | [0m[31m        ERROR)   print_color "$RED" "❌ [$timestamp] ERROR: $message" ;;
+[0m[90m     | [0m[32m        ERROR)   print_color "$RED" "❌ [$timestamp] ERROR${ $messa}ge" ;;
+[0m[90m  58 | [0m        WARN)    print_color "$YELLOW" "⚠️  [$timestamp] WARN: $message" ;;
+[90m  59 | [0m        INFO)    print_color "$CYAN" "ℹ️  [$timestamp] INFO: $message" ;;
+
+[1m[90m...Hiding additional autofix details (use --diff=full to print all autofixes)...
+
+[0m
+[1m[30m[107m  ISSUES  [0m
+
+[1m[4mCHANGELOG.md[0m[4m[90m:16:0[0m
+ [1m[90m[49m16:0[22m[39m[49m  [33m[49mlow[39m[49m  Multiple headings with the same content  [1m[90m[49mmarkdownlint/MD024[22m[39m[49m
+
+[1m[4mCONTRIBUTING.md[0m[4m[90m:15:0[0m
+ [1m[90m[49m15:0[22m[39m[49m  [33m[49mlow[39m[49m  Fenced code blocks should have a language specified  [1m[90m[49mmarkdownlint/MD040[22m[39m[49m
+
+[1m[4mREADME.md[0m[4m[90m:34:0[0m
+ [1m[90m[49m34:0[22m[39m[49m  [33m[49mlow[39m[49m  Emphasis used instead of a heading  [1m[90m[49mmarkdownlint/MD036[22m[39m[49m
+ [1m[90m[49m40:0[22m[39m[49m  [33m[49mlow[39m[49m  Emphasis used instead of a heading  [1m[90m[49mmarkdownlint/MD036[22m[39m[49m
+
+[1m[4mdist/feedback-sdk.min.js[0m[4m[90m:1:112[0m
+ [1m[90m[49m1:112  [22m[39m[49m  [31m[49mhigh[39m[49m  'define' is not defined.                                          [1m[90m[49meslint/no-undef[22m[39m[49m      
+ [1m[90m[49m1:123  [22m[39m[49m  [31m[49mhigh[39m[49m  'define' is not defined.                                          [1m[90m[49meslint/no-undef[22m[39m[49m      
+ [1m[90m[49m1:1011 [22m[39m[49m  [31m[49mhigh[39m[49m  Expected a conditional expression and instead saw an assignment.  [1m[90m[49meslint/no-cond-assign[22m[39m[49m
+ [1m[90m[49m1:1054 [22m[39m[49m  [31m[49mhigh[39m[49m  Expected a conditional expression and instead saw an assignment.  [1m[90m[49meslint/no-cond-assign[22m[39m[49m
+ [1m[90m[49m1:1624 [22m[39m[49m  [31m[49mhigh[39m[49m  Expected a conditional expression and instead saw an assignment.  [1m[90m[49meslint/no-cond-assign[22m[39m[49m
+ [1m[90m[49m1:2291 [22m[39m[49m  [31m[49mhigh[39m[49m  'n' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:2401 [22m[39m[49m  [31m[49mhigh[39m[49m  'r' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:2804 [22m[39m[49m  [31m[49mhigh[39m[49m  't' is defined but never used.                                    [1m[90m[49meslint/no-unused-vars[22m[39m[49m
+ [1m[90m[49m1:3028 [22m[39m[49m  [31m[49mhigh[39m[49m  Expected a 'break' statement before 'case'.                       [1m[90m[49meslint/no-fallthrough[22m[39m[49m
+ [1m[90m[49m1:3340 [22m[39m[49m  [31m[49mhigh[39m[49m  'a' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:3559 [22m[39m[49m  [31m[49mhigh[39m[49m  'u' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:4988 [22m[39m[49m  [31m[49mhigh[39m[49m  Expected a conditional expression and instead saw an assignment.  [1m[90m[49meslint/no-cond-assign[22m[39m[49m
+ [1m[90m[49m1:5031 [22m[39m[49m  [31m[49mhigh[39m[49m  Expected a conditional expression and instead saw an assignment.  [1m[90m[49meslint/no-cond-assign[22m[39m[49m
+ [1m[90m[49m1:5601 [22m[39m[49m  [31m[49mhigh[39m[49m  Expected a conditional expression and instead saw an assignment.  [1m[90m[49meslint/no-cond-assign[22m[39m[49m
+ [1m[90m[49m1:6268 [22m[39m[49m  [31m[49mhigh[39m[49m  'p' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:6378 [22m[39m[49m  [31m[49mhigh[39m[49m  'l' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:6921 [22m[39m[49m  [31m[49mhigh[39m[49m  't' is defined but never used.                                    [1m[90m[49meslint/no-unused-vars[22m[39m[49m
+ [1m[90m[49m1:6923 [22m[39m[49m  [31m[49mhigh[39m[49m  'e' is defined but never used.                                    [1m[90m[49meslint/no-unused-vars[22m[39m[49m
+ [1m[90m[49m1:6977 [22m[39m[49m  [31m[49mhigh[39m[49m  'd' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:7375 [22m[39m[49m  [31m[49mhigh[39m[49m  't' is defined but never used.                                    [1m[90m[49meslint/no-unused-vars[22m[39m[49m
+ [1m[90m[49m1:7377 [22m[39m[49m  [31m[49mhigh[39m[49m  'e' is defined but never used.                                    [1m[90m[49meslint/no-unused-vars[22m[39m[49m
+ [1m[90m[49m1:7379 [22m[39m[49m  [31m[49mhigh[39m[49m  'n' is defined but never used.                                    [1m[90m[49meslint/no-unused-vars[22m[39m[49m
+ [1m[90m[49m1:7433 [22m[39m[49m  [31m[49mhigh[39m[49m  'm' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:7903 [22m[39m[49m  [31m[49mhigh[39m[49m  't' is defined but never used.                                    [1m[90m[49meslint/no-unused-vars[22m[39m[49m
+ [1m[90m[49m1:7905 [22m[39m[49m  [31m[49mhigh[39m[49m  'e' is defined but never used.                                    [1m[90m[49meslint/no-unused-vars[22m[39m[49m
+ [1m[90m[49m1:7907 [22m[39m[49m  [31m[49mhigh[39m[49m  'n' is defined but never used.                                    [1m[90m[49meslint/no-unused-vars[22m[39m[49m
+ [1m[90m[49m1:7961 [22m[39m[49m  [31m[49mhigh[39m[49m  'g' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:8947 [22m[39m[49m  [31m[49mhigh[39m[49m  Expected a conditional expression and instead saw an assignment.  [1m[90m[49meslint/no-cond-assign[22m[39m[49m
+ [1m[90m[49m1:8990 [22m[39m[49m  [31m[49mhigh[39m[49m  Expected a conditional expression and instead saw an assignment.  [1m[90m[49meslint/no-cond-assign[22m[39m[49m
+ [1m[90m[49m1:9560 [22m[39m[49m  [31m[49mhigh[39m[49m  Expected a conditional expression and instead saw an assignment.  [1m[90m[49meslint/no-cond-assign[22m[39m[49m
+ [1m[90m[49m1:10227[22m[39m[49m  [31m[49mhigh[39m[49m  'j' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:10337[22m[39m[49m  [31m[49mhigh[39m[49m  'O' is a function.                                                [1m[90m[49meslint/no-func-assign[22m[39m[49m
+ [1m[90m[49m1:11494[22m[39m[49m  [31m[49mhigh[39m[49m  't' is defined but never used.                                    [1m[90m[49meslint/no-unused-vars[22m[39m[49m
+
+[1m[4mdocs/SECURITY_TESTING.md[0m[4m[90m:88:0[0m
+ [1m[90m[49m88:0[22m[39m[49m  [33m[49mlow[39m[49m  Fenced code blocks should have a language specified  [1m[90m[49mmarkdownlint/MD040[22m[39m[49m
+
+[1m[4mscripts/security-test.sh[0m[4m[90m:13:10[0m
+ [1m[90m[49m 13:10[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m 14:10[22m[39m[49m  [35m[49mmedium[39m[49m  PROJECT_ROOT appears unused. Verify use (or export if used externally).               [1m[90m[49mshellcheck/SC2034[22m[39m[49m
+ [1m[90m[49m 14:10[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m 14:30[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 54:11[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m 56:5 [22m[39m[49m  [33m[49mlow[39m[49m     Consider adding a default *) case, even if it just exits with error.                  [1m[90m[49mshellcheck/SC2249[22m[39m[49m
+ [1m[90m[49m 56:11[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 57:31[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 57:41[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 57:60[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 58:31[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 58:46[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 58:64[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 59:31[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 59:44[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 59:62[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 60:31[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 60:43[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 60:64[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 61:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m 61:21[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 61:56[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 61:70[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 61:89[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 68:8 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m 68:11[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 69:15[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 80:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 81:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 81:45[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m 81:51[22m[39m[49m  [33m[49mlow[39m[49m     Prefer double quoting even when variables don't contain special characters.           [1m[90m[49mshellcheck/SC2248[22m[39m[49m
+ [1m[90m[49m 81:51[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 82:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 82:23[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 82:46[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 82:46[22m[39m[49m  [33m[49mlow[39m[49m     Prefer double quoting even when variables don't contain special characters.           [1m[90m[49mshellcheck/SC2248[22m[39m[49m
+ [1m[90m[49m 82:55[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 83:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 83:45[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m 83:51[22m[39m[49m  [33m[49mlow[39m[49m     Prefer double quoting even when variables don't contain special characters.           [1m[90m[49mshellcheck/SC2248[22m[39m[49m
+ [1m[90m[49m 83:51[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 84:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m 99:8 [22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m101:10[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m103:10[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m111:1 [22m[39m[49m  [33m[49mlow[39m[49m     This function is never invoked. Check usage (or ignored if invoked indirectly).       [1m[90m[49mshellcheck/SC2329[22m[39m[49m
+ [1m[90m[49m113:11[22m[39m[49m  [35m[49mmedium[39m[49m  bash_lineno appears unused. Verify use (or export if used externally).                [1m[90m[49mshellcheck/SC2034[22m[39m[49m
+ [1m[90m[49m115:38[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m115:48[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m123:1 [22m[39m[49m  [33m[49mlow[39m[49m     This function is never invoked. Check usage (or ignored if invoked indirectly).       [1m[90m[49mshellcheck/SC2329[22m[39m[49m
+ [1m[90m[49m181:33[22m[39m[49m  [35m[49mmedium[39m[49m  SKIP_CACHE appears unused. Verify use (or export if used externally).                 [1m[90m[49mshellcheck/SC2034[22m[39m[49m
+ [1m[90m[49m206:8 [22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m206:23[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m207:19[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m211:26[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m212:14[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m213:22[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m216:37[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m224:11[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m225:8 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m225:14[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m230:38[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m240:23[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m240:43[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m244:10[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in a ! condition so set -e will be disabled. Invoke          [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m244:10[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m246:12[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m254:10[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m254:10[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in a ! condition so set -e will be disabled. Invoke          [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m256:12[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m259:19[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m260:19[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m261:13[22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m261:16[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m265:22[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m267:27[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m268:26[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m268:45[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m269:30[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m269:47[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m281:12[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m281:27[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m282:26[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m285:23[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m289:38[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m289:49[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m302:11[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m303:24[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m306:24[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m307:25[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m310:17[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m310:36[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m310:50[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m312:22[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m315:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m315:14[22m[39m[49m  [33m[49mlow[39m[49m     Prefer double quoting even when variables don't contain special characters.           [1m[90m[49mshellcheck/SC2248[22m[39m[49m
+ [1m[90m[49m315:14[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m316:24[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m318:24[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m318:54[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m321:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m321:15[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m323:25[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m324:25[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m329:11[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m332:5 [22m[39m[49m  [35m[49mmedium[39m[49m  TEST_TIMINGS appears unused. Verify use (or export if used externally).               [1m[90m[49mshellcheck/SC2034[22m[39m[49m
+ [1m[90m[49m332:19[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m332:30[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m333:19[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m333:30[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m334:21[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m334:30[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m334:41[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m334:52[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m336:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer double quoting even when variables don't contain special characters.           [1m[90m[49mshellcheck/SC2248[22m[39m[49m
+ [1m[90m[49m336:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m344:69[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m346:14[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in a ! condition so set -e will be disabled. Invoke          [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m346:14[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m346:24[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m346:35[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m346:48[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m346:60[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m348:16[22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m348:19[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m350:24[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m350:24[22m[39m[49m  [33m[49mlow[39m[49m     Prefer double quoting even when variables don't contain special characters.           [1m[90m[49mshellcheck/SC2248[22m[39m[49m
+ [1m[90m[49m355:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer double quoting even when variables don't contain special characters.           [1m[90m[49mshellcheck/SC2248[22m[39m[49m
+ [1m[90m[49m355:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m365:69[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m368:15[22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m368:17[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m368:17[22m[39m[49m  [33m[49mlow[39m[49m     Prefer double quoting even when variables don't contain special characters.           [1m[90m[49mshellcheck/SC2248[22m[39m[49m
+ [1m[90m[49m368:31[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m370:31[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m371:27[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m379:20[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m379:31[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m379:44[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m379:56[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m386:15[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m389:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m389:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer double quoting even when variables don't contain special characters.           [1m[90m[49mshellcheck/SC2248[22m[39m[49m
+ [1m[90m[49m398:11[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m401:39[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m404:8 [22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m406:9 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m406:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m406:41[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m407:44[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m411:8 [22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m416:8 [22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an && condition so set -e will be disabled. Invoke        [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m416:8 [22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m416:30[22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m416:33[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m421:8 [22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m426:8 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m426:11[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m428:12[22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an 'if' condition so set -e will be disabled. Invoke      [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m433:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m434:50[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m450:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m455:14[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m456:17[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m457:16[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m457:28[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m463:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m464:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m465:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m475:72[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m477:9 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m477:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m479:36[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m479:49[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m479:59[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m479:79[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m482:13[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m487:1 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m499:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m501:15[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m502:19[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m504:14[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m505:16[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m506:20[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m509:14[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m510:15[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m511:15[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m512:17[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m513:23[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m513:53[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m513:69[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m520:72[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m522:9 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m522:12[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m522:46[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m525:17[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m527:14[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m528:16[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m529:20[22m[39m[49m  [33m[49mlow[39m[49m     Consider invoking this command separately to avoid masking its return value (or use   [1m[90m[49mshellcheck/SC2312[22m[39m[49m
+                 '|| true' to ignore).                                                                                  
+ [1m[90m[49m529:20[22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m529:22[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m529:22[22m[39m[49m  [33m[49mlow[39m[49m     Double quote to prevent globbing and word splitting.                                  [1m[90m[49mshellcheck/SC2086[22m[39m[49m
+ [1m[90m[49m530:20[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m531:19[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m532:38[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m537:13[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m554:15[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m557:8 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m557:11[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m563:11[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m564:8 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m564:14[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m574:35[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m576:8 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m576:10[22m[39m[49m  [33m[49mlow[39m[49m     Double quote to prevent globbing and word splitting.                                  [1m[90m[49mshellcheck/SC2086[22m[39m[49m
+ [1m[90m[49m576:10[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m584:11[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m587:8 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m587:11[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m587:34[22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m587:36[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m587:36[22m[39m[49m  [33m[49mlow[39m[49m     Double quote to prevent globbing and word splitting.                                  [1m[90m[49mshellcheck/SC2086[22m[39m[49m
+ [1m[90m[49m588:51[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m589:9 [22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an || condition so set -e will be disabled. Invoke        [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m592:9 [22m[39m[49m  [33m[49mlow[39m[49m     This function is invoked in an || condition so set -e will be disabled. Invoke        [1m[90m[49mshellcheck/SC2310[22m[39m[49m
+                 separately if failures should cause the script to exit.                                                
+ [1m[90m[49m595:11[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m602:11[22m[39m[49m  [35m[49mmedium[39m[49m  Declare and assign separately to avoid masking return values.                         [1m[90m[49mshellcheck/SC2155[22m[39m[49m
+ [1m[90m[49m603:24[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m604:24[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m606:27[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m606:42[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m606:58[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m606:74[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m606:89[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m607:31[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m609:8 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m609:11[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m610:31[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m610:46[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m610:62[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m610:78[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m610:93[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m611:35[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m616:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m616:40[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m617:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m617:41[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m618:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m618:39[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m619:18[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m622:8 [22m[39m[49m  [33m[49mlow[39m[49m     Prefer [[ ]] over [ ] for tests in Bash/Ksh/Busybox.                                  [1m[90m[49mshellcheck/SC2292[22m[39m[49m
+ [1m[90m[49m622:10[22m[39m[49m  [33m[49mlow[39m[49m     Prefer double quoting even when variables don't contain special characters.           [1m[90m[49mshellcheck/SC2248[22m[39m[49m
+ [1m[90m[49m622:10[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m623:22[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+ [1m[90m[49m626:22[22m[39m[49m  [33m[49mlow[39m[49m     Prefer putting braces around variable references even when not strictly required.     [1m[90m[49mshellcheck/SC2250[22m[39m[49m
+
+[1m[30m[107m  FAILURES  [0m
+
+ [1mtrufflehog[22m   [1m.cursor/rules/snyk_rules.mdc... (42 files)[22m  .trunk/out/u9jrG.yaml
+ [1mprettier[22m     [1m.eslintrc.js... (14 files)[22m                  .trunk/out/CTEK8.yaml
+ [1mcheckov[22m      [1mInstalling hermetic tool checkov v3.2.486[22m   .trunk/out/CSgHn.yaml
+ [1mprettier[22m     [1m.github/workflows/ci.yml... (2 files)[22m       .trunk/out/G5rVM.yaml
+ [1myamllint[22m     [1mInstalling hermetic tool yamllint v1.37.1[22m   .trunk/out/syLkF.yaml
+ [1mprettier[22m     [1m.prettierrc[22m                                 .trunk/out/Ffiis.yaml
+ [1mprettier[22m     [1mCHANGELOG.md... (5 files)[22m                   .trunk/out/LSsgi.yaml
+ [1mprettier[22m     [1mdemo/index.html[22m                             .trunk/out/wa1Su.yaml
+ [1mprettier[22m     [1mdemo/style.css[22m                              .trunk/out/Oll3d.yaml
+ [1mosv-scanner[22m  [1mpackage-lock.json[22m                           .trunk/out/I4Abi.yaml
+ [1mprettier[22m     [1mpackage.json[22m                                .trunk/out/iloel.yaml
+
+[1m[30m[107m  NOTICES  [0m
+
+ [90m[49mSome tools failed to run. You can open the details yaml files for more information.[39m[49m
+
+Checked 22 files
+[1m[91m✖ 293 lint issues (203 auto-fixable)
+[0m[90mRun [0m[96mtrunk upgrade[0m[90m to upgrade [0m[90m1 linter
+[0m[90mRun [0m[96mtrunk config share[0m[90m to allow committing your trunk config for your teammates to use
+[0m
