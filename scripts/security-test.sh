@@ -570,10 +570,10 @@ EOF
         local test_duration=$(echo "$result" | cut -d"|" -f4)
         local output_file=$(echo "$result" | cut -d"|" -f5)
         
-        [ "$first" = false ] && echo "," >> "$output_file"
+        [ "$first" = false ] && echo "," >> "$json_output_file"
         first=false
         
-        cat >> "$output_file" << EOF
+        cat >> "$json_output_file" << EOF
     {
       "id": "$test_id",
       "name": "$test_name",
